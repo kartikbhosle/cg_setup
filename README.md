@@ -147,7 +147,7 @@ cd "C:\path\to\installer"
 Then:
 
 ``` powershell
-.\CG_Setup_AllInOne.ps1
+.\cg_setup_v4.ps1
 ```
 
 The installer checks the machine and installs/configures the required
