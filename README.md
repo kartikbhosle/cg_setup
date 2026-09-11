@@ -1,92 +1,79 @@
-# 🎨 CG Lab Setup --- `graphics.h` on Windows
+# Computer Graphics Lab Setup
 
-> **One-click setup for Computer Graphics lab programs using
-> `graphics.h`, WinBGIm, MSYS2 MINGW64, and VS Code.**
+A one-time Windows setup script for running legacy `graphics.h` / WinBGIm Computer Graphics programs with C++ in VS Code.
 
-This project was created to solve a common college-lab problem: getting
-old `graphics.h` / WinBGIm programs to compile and run consistently
-across different Windows PCs.
+## What It Installs
 
-Instead of asking every student to manually install compilers, copy
-headers, find libraries, configure linker flags, and fight with VS Code
-settings, this project provides an **all-in-one PowerShell installer**.
+- MSYS2
+- MINGW64 GCC
+- WinBGIm:
+  - `graphics.h`
+  - `winbgim.h`
+  - `libbgi64.a`
+- MINGW64 compiler directory in the Windows system PATH
+- VS Code extension: **Graphics.h Compiler** by AlbatrossC
 
-------------------------------------------------------------------------
+The script also verifies GCC, normal C++ compilation, `graphics.h` compilation, and WinBGIm linking.
 
-## ✨ What does it do?
+## VS Code Configuration
 
-The installer is designed to configure a Windows PC for Computer
-Graphics practicals.
+This setup intentionally **does not modify**:
 
-``` text
-                CG Lab Setup
-                     │
-          ┌──────────┴──────────┐
-          ▼                     ▼
-       MSYS2                 VS Code
-          │                     │
-      MINGW64                  │
-          │                     │
-         g++                    │
-          │                     │
-          └───────┬─────────────┘
-                  ▼
-              WinBGIm
-        ┌─────────┼─────────┐
-        ▼         ▼         ▼
-   graphics.h  winbgim.h  libbgi64.a
-                  │
-                  ▼
-        CG: Build Current File
-                  │
-                  ▼
-          🎨 Graphics Program
+- `settings.json`
+- `tasks.json`
+- `c_cpp_properties.json`
+- VS Code terminal profiles
+
+The Graphics.h Compiler extension handles its own Graphics/WinBGI execution workflow and its own additional toolkit/dependencies. Those dependencies are downloaded by the extension when its WinBGI functionality is initialized.
+
+## Student Workflow
+
+After setup:
+
+1. Open VS Code.
+2. Open or create a `.cpp` Computer Graphics program.
+3. Use the **Graphics.h Compiler** extension to run the Graphics program.
+
+For example:
+
+```cpp
+#include <graphics.h>
+#include <conio.h>
+#include <iostream>
 ```
 
-The setup targets the **MINGW64 + WinBGIm** combination that was tested
-for this project.
+The installed MINGW64 environment is also available for normal `g++` usage from a properly configured terminal.
 
-------------------------------------------------------------------------
+## Requirements
 
-## 🚀 Features
+- Windows 10/11
+- Administrator access during installation
+- Internet connection
+- VS Code installed
 
--   Installs/checks **MSYS2**
--   Installs/checks **MINGW64 GCC (`g++`)**
--   Installs the project's known-good WinBGIm files
--   Configures an **MSYS2 MINGW64** terminal profile for VS Code
--   Adds a global VS Code task:
-    -   `CG: Build Current File`
--   Works with CG projects located in arbitrary folders
--   Uses the currently open `.cpp` file
--   Uses the required WinBGIm linker libraries automatically
--   Does not require students to manually type long compiler commands
--   Designed to avoid changing the Windows PATH unnecessarily
--   Creates backups before modifying VS Code configuration
+If the VS Code `code` command is available, the setup installs the extension automatically. Otherwise, install **Graphics.h Compiler** manually from the VS Code Extensions panel.
 
-------------------------------------------------------------------------
+## Installation
 
-## 🧰 What is included?
+Open **PowerShell as Administrator** and run:
 
-The project uses these WinBGIm components:
-
-``` text
-graphics.h
-winbgim.h
-libbgi64.a
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
 ```
 
-The headers are from **WinBGIm Version 6.0**. The supplied header
-identifies the library as Version 6.0, dated August 9, 2004.
+Then navigate to the folder containing the setup script and run:
 
-The compiler/linker setup uses:
-
-``` text
-MINGW64
+```powershell
+.\CG_Setup_v1.ps1
 ```
 
-and the CG build links against:
+The script performs installation and verification automatically.
 
-``` text
+## WinBGIm Linking
+
+The WinBGIm environment uses:
+
+```text
 libbgi64.a
 -lgdi32
 -lcomdlg32
@@ -95,418 +82,154 @@ libbgi64.a
 -lole32
 ```
 
-------------------------------------------------------------------------
+The installer verifies that WinBGIm can be linked successfully.
 
-## 💻 Requirements
+## Why Two Workflows?
 
-### Target machine
+This project intentionally keeps two independent workflows.
 
--   Windows 10/11
--   Administrator access
--   Internet connection for installing MSYS2 when it is not already
-    installed
--   VS Code installed
+### MSYS2 / MINGW64
 
-The installer is intended for **Windows PCs used for the Computer
-Graphics lab**.
+Provides:
 
-------------------------------------------------------------------------
+- GCC
+- terminal-based `g++`
+- general C++ compilation
+- WinBGIm development files
 
-## 📦 Installation
+### Graphics.h Compiler Extension
 
-### 1. Download the installer
+Provides:
 
-Use the release PowerShell installer from this repository, for example:
+- convenient Graphics.h execution inside VS Code
+- its own WinBGI execution environment
+- automatic installation of its additional toolkit when required
 
-``` text
-CG_Setup_AllInOne.ps1
+The two environments are kept separate so that VS Code JSON configuration does not need to be modified.
+
+## Verification
+
+The installer checks:
+
+```text
+MSYS2
+  ↓
+MINGW64 GCC
+  ↓
+g++.exe
+  ↓
+cc1plus.exe
+  ↓
+Normal C++ compilation
+  ↓
+graphics.h compilation
+  ↓
+WinBGIm linking
+  ↓
+VS Code extension
 ```
 
-### 2. Run PowerShell as Administrator
+If a required component fails verification, setup stops and reports the failure.
 
-Open:
+## Important Notes
 
-``` text
-Windows PowerShell → Run as administrator
+### Legacy technology
+
+`graphics.h` and WinBGIm are legacy Computer Graphics teaching technologies intended here for college/lab practicals.
+
+### Internet
+
+Internet access is required during installation for MSYS2/GCC packages and may also be required by the VS Code extension when it downloads its own toolkit.
+
+### Administrator privileges
+
+Administrator privileges are required because the setup can install software and modify the system PATH.
+
+### VS Code JSON
+
+Students do **not** need to manually edit:
+
+```text
+settings.json
+tasks.json
+c_cpp_properties.json
 ```
 
-Temporarily allow the installer to run:
+## Troubleshooting
 
-``` powershell
-Set-ExecutionPolicy -Scope Process Bypass
+### `g++` is not recognized
+
+Close and reopen the terminal after installation, then run:
+
+```powershell
+g++ --version
 ```
 
-### 3. Run the installer
-
-Navigate to the directory containing the installer:
-
-``` powershell
-cd "C:\path\to\installer"
-```
-
-Then:
-
-``` powershell
-.\cg_setup_v4.ps1
-```
-
-The installer checks the machine and installs/configures the required
-components.
-
-------------------------------------------------------------------------
-
-## 👨‍🎓 Student workflow
-
-After setup, students do **not** need to create a special CG project
-directory.
-
-### Step 1 --- Open any CG folder
-
-For example:
-
-``` text
-D:\College\CG\Practical1
-```
-
-Open that folder in VS Code.
-
-### Step 2 --- Create/open a `.cpp` file
-
-Example:
-
-``` cpp
-#include <graphics.h>
-
-int main()
-{
-    initwindow(800, 600, "Computer Graphics");
-
-    circle(400, 300, 100);
-
-    getch();
-    closegraph();
-
-    return 0;
-}
-```
-
-### Step 3 --- Build
-
-In VS Code:
-
-``` text
-Terminal
-   → Run Task
-      → CG: Build Current File
-```
-
-### Step 4 --- Run
-
-From the VS Code MINGW64 terminal:
-
-``` bash
-./main.exe
-```
-
-A graphics window should open.
-
-------------------------------------------------------------------------
-
-## ⚙️ Build command
-
-The global task essentially performs the equivalent of:
-
-``` bash
-g++ <current-file>.cpp \
-    -o <current-file>.exe \
-    C:\msys64\mingw64\lib\libbgi64.a \
-    -lgdi32 \
-    -lcomdlg32 \
-    -luuid \
-    -loleaut32 \
-    -lole32
-```
-
-This removes the need for students to remember the WinBGIm linker
-configuration.
-
-------------------------------------------------------------------------
-
-## 🧪 Verification
-
-The setup should verify that:
-
-``` text
-C:\msys64\mingw64\bin\g++.exe
-```
-
-exists and that the WinBGIm files are installed under:
-
-``` text
-C:\msys64\mingw64\include\
-C:\msys64\mingw64\lib\
-```
-
-A basic `graphics.h` compilation test should also be performed.
-
-For a real end-to-end test, compile and run a program containing:
-
-``` cpp
-#include <graphics.h>
-```
-
-and a simple drawing operation such as:
-
-``` cpp
-circle(400, 300, 100);
-```
-
-------------------------------------------------------------------------
-
-## 🛡️ Safety / existing configurations
-
-The installer is designed with lab PCs in mind, but it should still be
-tested against different existing configurations before mass deployment.
-
-Important design goals:
-
--   Do not unnecessarily modify the Windows PATH.
--   Do not remove an existing standalone MinGW installation.
--   Back up VS Code configuration before modification.
--   Preserve existing VS Code tasks where possible.
--   Add the CG build task rather than replacing unrelated build tasks.
-
-------------------------------------------------------------------------
-
-## 🧩 Why MINGW64?
-
-Modern MSYS2 recommends newer environments such as UCRT64 for new
-development. However, this project deliberately uses **MINGW64** because
-the WinBGIm static library used by this project was tested with that
-environment.
-
-Changing the environment without rebuilding/revalidating the WinBGIm
-library can introduce CRT/toolchain compatibility problems.
-
-Therefore:
-
-> **MINGW64 is a deliberate compatibility choice for this legacy
-> `graphics.h` lab setup.**
-
-This project is not intended to represent the recommended architecture
-for a new modern C++ graphics application.
-
-------------------------------------------------------------------------
-
-## ⚠️ Limitations
-
-`graphics.h` / WinBGIm is legacy technology.
-
-The supplied WinBGIm header itself dates to 2004 and contains a warning
-that the library may not be compatible with 64-bit versions of Windows.
-
-This project exists primarily to make a **college Computer Graphics
-practical environment** reproducible.
-
-It should not be considered a recommendation for new production graphics
-software.
-
-------------------------------------------------------------------------
-
-## 🔧 Troubleshooting
-
-### `g++` is not found
-
-Open the VS Code terminal and check:
-
-``` bash
-which g++
-```
-
-For this setup, it should resolve to the MINGW64 compiler:
-
-``` text
-/mingw64/bin/g++
-```
-
-------------------------------------------------------------------------
-
-### `graphics.h: No such file or directory`
+### `graphics.h` cannot be found
 
 Check:
 
-``` text
+```text
 C:\msys64\mingw64\include\graphics.h
 ```
 
-The installer should place the header there.
+and rerun the setup if necessary.
 
-------------------------------------------------------------------------
-
-### `cannot find -lbgi64` / BGI linker errors
+### WinBGIm linking fails
 
 Check:
 
-``` text
+```text
 C:\msys64\mingw64\lib\libbgi64.a
 ```
 
-Also make sure the build is being performed with the project's MINGW64
-configuration.
+The installer normally detects this during its verification stage.
 
-------------------------------------------------------------------------
+### Extension is not installed
 
-### VS Code does not show `CG: Build Current File`
+In VS Code, open **Extensions** and search for:
 
-Open:
-
-``` text
-Terminal → Run Task
+```text
+Graphics.h Compiler
 ```
 
-and look for:
+Install the extension by **AlbatrossC**.
 
-``` text
-CG: Build Current File
-```
+## Recommended Repository Structure
 
-If it is missing, restart VS Code after installation and check the
-user's VS Code task configuration.
-
-------------------------------------------------------------------------
-
-### Existing VS Code configuration causes a setup problem
-
-The installer creates backups before modifying configuration.
-
-Look under:
-
-``` text
-%APPDATA%\Code\User\
-```
-
-for backup files created by the installer.
-
-Do not delete the backups until the setup has been confirmed to work.
-
-------------------------------------------------------------------------
-
-## 📁 Suggested repository structure
-
-A clean GitHub repository can look like:
-
-``` text
-CG-Lab-Setup/
+```text
+CG_Setup/
 │
+├── CG_Setup_v1.ps1
 ├── README.md
-├── CG_Setup_AllInOne.ps1
-├── LICENSE
-└── examples/
-    ├── circle.cpp
-    ├── line.cpp
-    ├── house.cpp
-    └── heart.cpp
+└── WinBGIm/
+    ├── graphics.h
+    ├── winbgim.h
+    └── libbgi64.a
 ```
 
-The installer itself contains the required WinBGIm assets, so students
-do not need to manually manage the header/library files.
+The current setup script contains the WinBGIm files internally, so the separate `WinBGIm` folder is not required for the script itself.
 
-------------------------------------------------------------------------
+## Credits
 
-## 🎓 Why this project exists
+**Created by Kartik Bhosle**
 
-This started as a practical problem:
+GitHub: https://github.com/kartikbhosle
 
-> **"How do we make `graphics.h` work on all the Computer Graphics lab
-> PCs?"**
+## Third-Party Software
 
-Different machines can have different combinations of:
+This setup uses third-party software including:
 
--   MinGW
--   MSYS2
--   GCC versions
--   VS Code configurations
--   existing build tasks
--   missing WinBGIm files
--   conflicting compiler paths
+- MSYS2
+- GCC / MINGW64
+- WinBGIm
+- Visual Studio Code
+- Graphics.h Compiler by AlbatrossC
 
-Manual setup makes every student's machine another debugging problem.
+Third-party software and libraries remain subject to their respective licenses and terms.
 
-The goal of this project is to turn that into:
+## License
 
-``` text
-One installer
-      ↓
-One standardized environment
-      ↓
-Open VS Code
-      ↓
-Write CG code
-      ↓
-Build
-      ↓
-Run
-```
+This setup script is provided for educational and college-lab deployment purposes.
 
-------------------------------------------------------------------------
-
-## 📌 Project status
-
-**Tested successfully on multiple Windows PCs**, including:
-
--   a PC where the CG environment was already working and VS Code
-    configuration was the remaining setup step
--   a second PC where MSYS2 was removed before running the installer
-
-The actual `graphics.h` CG program was successfully compiled and
-executed after setup.
-
-Before large-scale lab deployment, test the installer on additional
-machines with different existing compiler/VS Code configurations.
-
-------------------------------------------------------------------------
-
-## 🤝 Contributing
-
-Suggestions, bug reports, and improvements are welcome.
-
-If you discover a machine-specific issue, please include:
-
--   Windows version
--   whether MSYS2 was already installed
--   whether another MinGW installation existed
--   GCC version
--   VS Code version
--   the installer output/error
-
-This makes it easier to reproduce and fix the problem.
-
-------------------------------------------------------------------------
-
-## 📜 License / Third-party notice
-
-This repository's installer/orchestration code can be licensed
-separately from the WinBGIm components.
-
-The included WinBGIm header identifies the original library as **WinBGIm
-Version 6.0**, authored by Grant Macklem, Gregory Schmelter, Alan
-Schmidt, Ivan Stashak, and Michael Main, associated with the University
-of Colorado at Boulder.
-
-Before publishing the embedded third-party WinBGIm files publicly,
-verify the applicable license/redistribution terms and preserve the
-original notices.
-
-------------------------------------------------------------------------
-
-## ❤️ Made for the CG Lab
-
-Built to make the classic:
-
-``` cpp
-#include <graphics.h>
-```
-
-just work.
-
-**Less setup. Less debugging. More drawing. 🎨**
+Third-party software, libraries, and extensions remain subject to their respective licenses.
