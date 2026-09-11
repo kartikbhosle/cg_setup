@@ -1,0 +1,34 @@
+1. Nevigate to the folder where file is located
+
+2. copy the path of the folder by pressing (Alt + D) in the folder
+
+3. search windows powershell in search bar
+
+4. open the windows powershell in administrator mode
+
+5. type cd "Path copied in step 1"
+ex. cd "d:\CG\CG"
+
+6. type next command -> "Set-ExecutionPolicy -Scope Process Bypass"
+
+7. press y and then enter 
+
+8. .\CG_Setup_v1.ps1
+
+9. wait for installation 
+
+10. open sample codes given in the same file
+
+11. press on option of run button 
+
+12 select last option
+
+13 accept to download dependencies/ tool kit
+
+14. wait for download
+
+15. after download run the code again
+
+16. once compiled run the file in terminal using
+
+.\name.exe
